@@ -1,0 +1,21 @@
+system: eCOS
+version: 0.1.0-draft
+timestamp: "2026-05-13T16:50:00+08:00"
+phase: 1
+phase_name: "单体建立期 — 深度验证完成"
+
+components:
+  kos:
+    mcp: "✅ 13 tools, 7 domains, 7194 docs"
+  minerva:
+    mcp: "⚠️ 2/9 (KOS bridge ✅), L0 timeout ~25%"
+  ecos:
+    score: "可用性90% 可靠性85% 完整性90%"
+scenarios: "6/6 PASS"
+new_issues: "N1 ✅(timeout 180s) N2 ✅(FALSE_ALARM, PDF全文已索引)"
+
+cron:
+  - WF-001 每日索引 (7d650e0374bb, 明天02:00首跑)
+  - WF-003 健康检查 (2d970b4c12af, 下周一09:00首跑)
+
+pending: "I2纪律强化 | I3体验优化 | Phase2启动条件评估"
