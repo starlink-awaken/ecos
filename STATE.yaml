@@ -17,8 +17,8 @@ scenarios: "6/6 PASS"
 new_issues: "N1 ✅(timeout 180s) N2 ✅(FALSE_ALARM, PDF全文已索引)"
 
 cron:
-  - WF-001 每日索引 (7d650e0374bb, 每天02:00)
-  - WF-003 健康检查 (2d970b4c12af, 每周一09:00, last:OK)
-  - WF-005 HANDOFF自动更新 (3815c000cceb, 每2h)
+  - WF-001 每日索引 (7d650e0374bb, 每天02:00, last:OK 17:42)
+  - WF-003 健康检查 (2d970b4c12af, 每周一09:00, last:OK 16:54)
+  - WF-005 HANDOFF更新 (3815c000cceb, 每2h, last:OK 17:42)
 
-pending: "I5.1 ✅(WF-003交叉验证) | I6.1 ✅(FTS5 OR, 待MCP重载)"
+pending: "全部验证通过 ✅ | MCP重载后验证 FTS5 OR + K7 body_preview"
