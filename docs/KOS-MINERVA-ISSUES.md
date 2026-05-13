@@ -251,9 +251,10 @@ except ImportError:
 
 ---
 
-## K7: Snippet 仅显示标题 (MED)
+### K7: Snippet 仅显示标题 (MED → FIXED)
 
-**现象:** KOS 搜索结果的 snippet 字段只展示文档标题, 不显示正文匹配上下文
+**修复:** SELECT 增加 `body_preview` 字段 (substr(d.body, 1, 300))
+**生效:** 下次 MCP 重载后
 
 **根因:** FTS5 snippet() 函数的表结构或 tokenization 配置导致正文命中未高亮
 
