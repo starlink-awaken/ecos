@@ -2,7 +2,7 @@
 
 - **状态**: 已接受
 - **日期**: 2026-05-13
-- **决策者**: 夏铭星 + Hermes/deepseek-v4-pro
+- **决策者**: 夏同学 + Hermes/deepseek-v4-pro
 - **关联**: FAIL-20260513-003, FAIL-20260513-005, STATE.yaml P3
 
 ## 背景

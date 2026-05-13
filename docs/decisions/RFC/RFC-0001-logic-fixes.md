@@ -6,7 +6,7 @@
 | 标题 | 逻辑推演修正：三角模式、不可逆操作、L2-03 偏差阈值、SSB Schema v1 |
 | 状态 | DISCUSSION |
 | 日期 | 2026-05-13 |
-| 提案者 | Hermes/deepseek-v4-pro + 夏铭星 |
+| 提案者 | Hermes/deepseek-v4-pro + 夏同学 |
 | 讨论期 | 默认 48h，截止 2026-05-15 11:37 CST |
 | 关联 ADR | ADR-003, ADR-004, ADR-005 |
 

@@ -2,7 +2,7 @@
 
 - **状态**: 已接受
 - **日期**: 2026-05-13
-- **决策者**: 夏铭星 + Hermes/deepseek-v4-pro
+- **决策者**: 夏同学 + Hermes/deepseek-v4-pro
 - **关联**: RFC-0001, ADR-003, ADR-004, ADR-005
 
 ## 背景
