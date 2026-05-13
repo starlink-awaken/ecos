@@ -1,0 +1,32 @@
+# eCOS Wiki — 侧边栏导航
+
+- [**Home**](Home)
+- **架构**
+  - [六层架构模型](architecture/six-layer-model)
+  - [IPA 统一模型](architecture/IPA-6LAYER)
+  - [SSB Event Schema](architecture/SSB-SCHEMA-V1)
+  - [子系统身份](architecture/SUBSYSTEM-IDENTITY)
+- **宪法与决策**
+  - [GENOME 宪法](constitution/GENOME)
+  - [ADR 索引](decisions/ADR-INDEX)
+  - [RFC 流程](decisions/RFC-PROCESS)
+- **Agent**
+  - [委员会章程](agents/CHARTER)
+  - [Phase1 三角模式](agents/PHASE1-TRIANGLE)
+  - [Workflow 规范](agents/WORKFLOW-SPEC)
+- **安全**
+  - [不可逆操作](policy/IRREVERSIBLE-OPS)
+  - [红蓝对抗](reviews/REDTEAM)
+- **运维**
+  - [STATE 快照](operations/STATE)
+  - [Cron 任务](operations/CRON)
+  - [HANDOFF 机制](operations/HANDOFF)
+- **复盘**
+  - [Phase1 复盘](reviews/PHASE1-REVIEW)
+  - [场景验证](reviews/SCENARIO-VERIFICATION)
+  - [深度审查](reviews/DEEP-REVIEW)
+  - [问题清单](reviews/ALL-ISSUES)
+- **开发**
+  - [贡献指南](development/CONTRIBUTING)
+  - [变更日志](development/CHANGELOG)
+  - [迭代规划](development/NEXT-STEPS)

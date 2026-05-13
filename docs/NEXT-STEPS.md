@@ -155,8 +155,13 @@ Month 2: Phase 2 启动条件评估
 ## 优先级速查
 
 ```
+观察列表 (不阻塞, 定期回顾):
+  □ K3 KOS移植性 — 换机时评估
+  □ M3 Semantic Search — Phase2需要时填充LanceDB
+  □ M5 429限流 — 影响学术搜索时配API key
+
 现在就做:
-  □ MCP 重载验证 FTS5 OR
+  □ MCP 重载验证 FTS5 OR + K7 body_preview
   □ 等 WF-001/WF-005 首跑
 
 本周:
