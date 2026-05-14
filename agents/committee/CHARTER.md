@@ -102,7 +102,7 @@ CHAIR + EXEC + AUDIT 三角模式
 
 ## 四、SSB 通信协议（委员会内部）
 
-所有委员会内消息必须经过 SSB 总线，格式如下：
+> **Phase 2 更新**: 当前使用 "Hermes 作为消息总线" 模式 — CHAIR(Hermes) 接收所有 Agent 输出，通过 delegate_task 的 context 参数传递信息，结果汇总后写入 SSB SQLite。完整 SSB Event 总线为 Phase 3 目标。
 
 ```yaml
 ssb_event:
