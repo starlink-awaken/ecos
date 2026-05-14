@@ -3,21 +3,48 @@
 
 system: eCOS
 version: 0.2.1
-timestamp: "2026-05-14T14:00:00+08:00"
-updated_by: "Hermes/deepseek-v4-flash via Weixin"
-security_score: "72% (P0+P1修复后, 原始57%)"
+timestamp: "2026-05-14T09:15:00+08:00"
+updated_by: "Hermes/deepseek-v4-pro via DeepSeek"
 phase: 2
-phase_name: "多Agent协作期 — Sprint 2 感知层完成"
+phase_name: "多Agent协作期 — Sprint 3 委员会升级"
 sprint: 3
-ssb_ready: True
-last_handoff: "2026-05-14T14:00:00+08:00"
+ssb_ready: true
 
-# Sprint 3 进展
-capture_ready: True
-filter_ready: True
-wf004_ready: True  # 工作流设计完成 + 最小原型验证通过
+# 架构实现度
+architecture:
+  L1_constitution: 95%
+  L2_perception: 50%  # Capture+Filter ✅ (Sprint2), Structure/Contextualize/Integrate → Phase3
+  L3_persistence: 90%  # KOS 8249docs
+  L4_intelligence: 65%  # WF-004 真多Agent ✅, CRITIC待引入
+  L5_action: 85%  # 4 cron + WF-004/006
+  L6_feedback: 55%  # WF-003周检+WF-006时检, 实时hook待做
+  overall: 78%
 
-pending:
-  - "Sprint 3: 委员会升级 — WF-004 已设计并验证通过"
-  - "下次迭代计划: 将WF-004投入实际高风险决策场景使用"
-  - "可选: KOS jieba分词（AUDIT CONDITIONAL通过，待修复4个MED问题后上线）"
+# 安全
+security_score: "72%"
+
+# 知识库
+kos_documents: 8249
+kos_domains: 7
+
+# Cron (4 active)
+cron_jobs:
+  - WF-001 KOS索引 daily 02:00 (last:OK 02:01, ⚠️ Weixin rate limited)
+  - WF-003 健康检查 weekly Mon 09:00 (last:OK 16:54)
+  - WF-005 HANDOFF every 2h (last:OK 08:00)
+  - WF-006 感知管道 hourly (last:OK 09:00)
+
+# 本次review发现
+new_findings:
+  - "Minerva 9/9 ✅ (Sprint1修复)"
+  - "SSB SQLite ✅ (722行, 双写)"
+  - "感知层 Capture+Filter ✅ (1204行)"
+  - "WF-004 真多Agent ✅ (2+1模式已验证)"
+  - "WF-001 Weixin delivery rate limited (LOW, 改deliver方式)"
+  - "KOS minerva zone 510→1510 (+1000, 感知管道生效)"
+
+# 下一步
+next:
+  - "Sprint3收尾: CHARTER修正 + WF-004实战"
+  - "Sprint4: L6实时化 + WF-002 Minerva定期研究"
+  - "Sprint5: jieba + SharedBrain + 场景验证"
