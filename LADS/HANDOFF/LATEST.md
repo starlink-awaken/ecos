@@ -1,26 +1,15 @@
 ---
 agent_signature:
   agent: "Hermes"
-  model: "deepseek-v4-pro via DeepSeek"
-  session_id: "final-close"
-  timestamp: "2026-05-14T17:15:00+08:00"
+  model: "deepseek-v4-pro"
+  session_id: "crash-sim"
+  timestamp: "2026-05-14T17:50:00+08:00"
 ---
 
-# HANDOFF — 最终交付
+# HANDOFF — 紧急中断
 
-eCOS v0.3.0 Phase 3 全部交付。
-
-## 系统概览
-
-- 架构 82% · 安全 78% · 6 Cron · 16 脚本 · 5 模型
-- KOS 10K文档 · SSB 4K事件 · 99文件 · 38 commits
-
-## 关键文件顺序
-
-1. GENOME.md (宪法)
-2. STATE.yaml (快照)
-3. FINAL-RETROSPECTIVE.md (全程复盘)
-
-## 给下一个 Agent
-
-从 STATE.yaml 开始。系统稳定，可直接使用。
+⚠️ 系统在深度测试中崩溃。最后已知状态：
+- T7 执行中 (4/4 待完成)
+- T6 刚完成委员会自主修复
+- KOS 10228 文档 · SSB 4245 事件 · 6 Cron 正常运行
+- 立即行动: 读 STATE.yaml → 继续 T7-T10
