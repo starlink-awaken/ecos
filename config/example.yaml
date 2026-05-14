@@ -1,0 +1,32 @@
+# eCOS 配置示例
+# 复制为 config/local.yaml 并修改为你的本地路径
+
+# Agent CLI 注册 (多模型委员会)
+agents:
+  copilot:
+    command: copilot
+    args: [--acp, --stdio]
+    type: acp
+    model_family: openai
+
+  claude:
+    command: claude
+    args: [--print]
+    type: cli
+    model_family: anthropic
+
+  gemini:
+    command: gemini
+    args: [--acp]
+    type: acp
+    model_family: google
+
+  kimi:
+    command: kimi-cli
+    args: [acp]
+    type: acp
+    model_family: moonshot
+
+# KOS 数据库路径 (仅 contextualize_pipeline 需要)
+kos:
+  db_path: "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/99-系统/memory/retrieval/documents-retrieval.sqlite"

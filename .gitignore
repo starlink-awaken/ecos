@@ -1,1 +1,30 @@
+# eCOS .gitignore
+
+# 运行时数据 (不提交)
 LADS/ssb/ecos.db
+LADS/ssb/ecos.db-wal
+LADS/ssb/ecos.db-shm
+LADS/ssb/ecos.db.bak
+LADS/ssb/ecos.jsonl
+
+# 密钥 (绝不提交)
+LADS/ssb/.ssb_key
+*.key
+*.pem
+
+# 本地配置
+config/local.yaml
+.hermes/
+
+# 大文件
+*.db
+scripts/jieba_dict.txt
+
+# macOS
+.DS_Store
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
