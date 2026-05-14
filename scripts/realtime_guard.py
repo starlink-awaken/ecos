@@ -10,19 +10,21 @@ import json, sys, os
 from pathlib import Path
 
 IRREVERSIBLE_OPS = {
-    "send_message":      {"level": 3, "reason": "消息已抵达用户设备，不可撤回"},
-    "himalaya send":     {"level": 3, "reason": "SMTP协议无撤回机制"},
-    "xurl post":         {"level": 3, "reason": "已推送至第三方平台"},
-    "git push":          {"level": 3, "reason": "已推送至远程，force push有风险"},
-    "rm -rf":            {"level": 3, "reason": "无备份则永久丢失"},
-    "DROP TABLE":        {"level": 3, "reason": "无备份则永久丢失"},
-    "DELETE FROM":       {"level": 2, "reason": "SQL删除，可回滚但需确认"},
-    "curl POST":         {"level": 2, "reason": "外部API写操作"},
-    "cronjob create":    {"level": 2, "reason": "新建定时任务"},
-    "cronjob update":    {"level": 2, "reason": "修改定时任务"},
-    "delegate_task":     {"level": 1, "reason": "子Agent可逆"},
-    "read_file":         {"level": 0, "reason": "只读操作"},
-    "search":            {"level": 0, "reason": "只读操作"},
+    "send_message":         {"level": 3, "reason": "消息已抵达用户设备，不可撤回"},
+    "himalaya send":        {"level": 3, "reason": "SMTP协议无撤回机制"},
+    "xurl post":            {"level": 3, "reason": "已推送至第三方平台"},
+    "git push":             {"level": 3, "reason": "已推送至远程，force push有风险"},
+    "rm -rf":               {"level": 3, "reason": "无备份则永久丢失"},
+    "DROP TABLE":           {"level": 3, "reason": "无备份则永久丢失"},
+    "write_file GENOME.md": {"level": 3, "reason": "GENOME.md是系统宪法(L0不变量)，修改需RFC+人类确认"},
+    "patch GENOME.md":      {"level": 3, "reason": "GENOME.md是系统宪法(L0不变量)，修改需RFC+人类确认"},
+    "DELETE FROM":          {"level": 2, "reason": "SQL删除，可回滚但需确认"},
+    "curl POST":            {"level": 2, "reason": "外部API写操作"},
+    "cronjob create":       {"level": 2, "reason": "新建定时任务"},
+    "cronjob update":       {"level": 2, "reason": "修改定时任务"},
+    "delegate_task":        {"level": 1, "reason": "子Agent可逆"},
+    "read_file":            {"level": 0, "reason": "只读操作"},
+    "search":               {"level": 0, "reason": "只读操作"},
 }
 
 def check(operation: str, auto_deny: bool = False) -> dict:
