@@ -33,9 +33,11 @@ committee_required: true
 
 roles:
   required: [CHAIR, EXEC, AUDIT]
+  optional: [CRITIC]  # HIGH/CRITICAL 风险时必召
   # CHAIR = Hermes（主Agent，不通过delegate_task）
   # EXEC = delegate_task × 2（并行，各自出方案）
   # AUDIT = delegate_task × 1（串行，审查两方案）
+  # CRITIC = delegate_task × 1（HIGH/CRITICAL时，串行，唯一职责：找问题）
 ```
 
 ---
