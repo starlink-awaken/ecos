@@ -372,6 +372,10 @@ class FilterPipeline:
                     self._mark_filtered(conn, row["id"], "FILE_MISSING",
                                         "File no longer exists", row["seq"])
                     stats["filtered_out"] += 1
+                    conn.execute(
+                        "UPDATE ssb_events SET action_req = 'NONE' WHERE id = ?",
+                        (row["id"],)
+                    )
                     continue
 
                 stats["events_scored"] += 1
@@ -437,7 +441,7 @@ class FilterPipeline:
 
         new_seq = seq + 1
         conn.execute("""
-            INSERT INTO ssb_events 
+            INSERT OR IGNORE INTO ssb_events 
             (id, seq, timestamp, session_id,
              source_agent, source_instance,
              event_type, event_subtype,
@@ -479,7 +483,7 @@ class FilterPipeline:
 
         new_seq = seq + 1
         conn.execute("""
-            INSERT INTO ssb_events 
+            INSERT OR IGNORE INTO ssb_events 
             (id, seq, timestamp, session_id,
              source_agent, source_instance,
              event_type, event_subtype,
@@ -520,7 +524,7 @@ class FilterPipeline:
 
         new_seq = seq + 1
         conn.execute("""
-            INSERT INTO ssb_events 
+            INSERT OR IGNORE INTO ssb_events 
             (id, seq, timestamp, session_id,
              source_agent, source_instance,
              event_type, event_subtype,
@@ -563,7 +567,7 @@ class FilterPipeline:
 
         new_seq = seq + 1
         conn.execute("""
-            INSERT INTO ssb_events 
+            INSERT OR IGNORE INTO ssb_events 
             (id, seq, timestamp, session_id,
              source_agent, source_instance,
              event_type, event_subtype,
