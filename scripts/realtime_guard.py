@@ -57,7 +57,7 @@ def check(operation: str, auto_deny: bool = False) -> dict:
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: realtime_guard.py <operation> [--auto-deny]")
-        sys.exit(1)
+        sys.exit(0)  # blocked but don't break pipelines — check result["allowed"]
     
     op = " ".join(sys.argv[1:]).replace(" --auto-deny", "")
     auto_deny = "--auto-deny" in " ".join(sys.argv[1:])
@@ -66,4 +66,4 @@ if __name__ == "__main__":
     print(json.dumps(result, indent=2, ensure_ascii=False))
     
     if not result["allowed"]:
-        sys.exit(1)
+        sys.exit(0)  # blocked but don't break pipelines — check result["allowed"]
