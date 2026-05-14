@@ -3,48 +3,29 @@
 
 system: eCOS
 version: 0.2.1
-timestamp: "2026-05-14T09:15:00+08:00"
+timestamp: "2026-05-14T09:45:00+08:00"
 updated_by: "Hermes/deepseek-v4-pro via DeepSeek"
 phase: 2
-phase_name: "多Agent协作期 — Sprint 3 委员会升级"
-sprint: 3
+phase_name: "多Agent协作期 — Sprint 5 完成 + 渗透测试"
+sprint: 5
 ssb_ready: true
 
-# 架构实现度
 architecture:
   L1_constitution: 95%
-  L2_perception: 50%  # Capture+Filter ✅ (Sprint2), Structure/Contextualize/Integrate → Phase3
-  L3_persistence: 90%  # KOS 8249docs
-  L4_intelligence: 65%  # WF-004 真多Agent ✅, CRITIC待引入
-  L5_action: 85%  # 4 cron + WF-004/006
-  L6_feedback: 55%  # WF-003周检+WF-006时检, 实时hook待做
+  L2_perception: 55%  # +内容语义评分 (Phase 3)
+  L3_persistence: 90%
+  L4_intelligence: 65%
+  L5_action: 85%
+  L6_feedback: 65%  # 日检+实时规则R1-R5
   overall: 78%
 
-# 安全
-security_score: "72%"
+security:
+  score: "65%"
+  pentest: "2/5 attacks successful (SSB注入 + 感知投毒)"
+  fixed: "SSB text dump (ecos.jsonl)"
+  known_limit: "感知评分无内容语义 (Phase 3)"
 
-# 知识库
-kos_documents: 8249
-kos_domains: 7
-
-# Cron (4 active)
-cron_jobs:
-  - WF-001 KOS索引 daily 02:00 (last:OK 02:01, ⚠️ Weixin rate limited)
-  - WF-003 健康检查 weekly Mon 09:00 (last:OK 16:54)
-  - WF-005 HANDOFF every 2h (last:OK 08:00)
-  - WF-006 感知管道 hourly (last:OK 09:00)
-
-# 本次review发现
-new_findings:
-  - "Minerva 9/9 ✅ (Sprint1修复)"
-  - "SSB SQLite ✅ (722行, 双写)"
-  - "感知层 Capture+Filter ✅ (1204行)"
-  - "WF-004 真多Agent ✅ (2+1模式已验证)"
-  - "WF-001 Weixin delivery rate limited (LOW, 改deliver方式)"
-  - "KOS minerva zone 510→1510 (+1000, 感知管道生效)"
-
-# 下一步
-next:
-  - "Sprint3收尾: CHARTER修正 + WF-004实战"
-  - "Sprint4: L6实时化 + WF-002 Minerva定期研究"
-  - "Sprint5: jieba + SharedBrain + 场景验证"
+kos: "8,249 docs, 7 domains"
+minerva: "9/9 tools"
+ssb: "353 events, 4 agents"
+cron: "5 active"
