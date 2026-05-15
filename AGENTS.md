@@ -34,7 +34,7 @@ eCOS/
 │
 ├── docs/                  ← 架构+决策+策略文档
 │   ├── architecture/      ← 六层模型·IPA·SSB Schema
-│   ├── decisions/ADR/     ← 9 份架构决策 (编号001-009)
+│   ├── decisions/ADR/     ← 10 份架构决策 (编号001-010)
 │   ├── decisions/RFC/     ← 变更提案
 │   ├── policy/            ← 不可逆操作规则等
 │   └── *.md               ← 复盘报告 (REVIEW/SCENARIO/REDTEAM/DEEP)
@@ -62,14 +62,17 @@ eCOS/
 
 | 组件 | 状态 |
 |------|------|
-| Phase | 3 (蜂群涌现期) — CLOSED |
+| Phase | **4 (蜂群智能期) — v0.4.0** |
 | MCP | KOS 13 tools + Minerva 9 tools = 22 |
-| KOS | 7 域, 11,077 文档 |
-| Cron | WF-001/003/005/006/007 — 6 个在线 |
+| KOS | 7 域, 8,351 文档 |
+| Cron | WF-001/002/003/005/006/007/008 — **7 个在线** |
 | Kanban | Board: `ecos` · Profile: chair/exec/audit/scribe |
-| SSB | 4,332 事件 · WF-008 桥接就绪 |
+| SSB | **4,385 事件** · Schema v1.0 · HMAC签名就绪 |
 | Schedule | WF-004.yaml — 5步委员会会议链 |
-| Git | 38+ commits, GENOME 监控已启用 |
+| Git | **60 commits**, 134 files, GENOME 监控已启用 |
+| 脚本 | **18 脚本** (感知6+安全5+SSB4+调度2+CRITIC1) |
+| 安全 | **82%** (实时拦截3级 + HMAC + 内容完整性) |
+| 架构 | **85%** (六层 + Integrate管道 + CRITIC自动化) |
 
 ---
 

@@ -6,6 +6,7 @@ LADS/ssb/ecos.db-wal
 LADS/ssb/ecos.db-shm
 LADS/ssb/ecos.db.bak
 LADS/ssb/ecos.jsonl
+LADS/ssb/ecos.jsonl.backup.*
 LADS/ssb/.kanban_bridge_state
 
 # 密钥 (绝不提交)
