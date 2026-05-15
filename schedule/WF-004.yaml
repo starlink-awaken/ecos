@@ -1,0 +1,79 @@
+# WF-004: 委员会决策会议 — 调度描述
+# 平台无关。driver 决定如何执行此描述。
+# 详见 WORKFLOW-SPEC.md（调度描述扩展）
+
+id: "WF-004"
+name: "委员会决策会议"
+version: "0.2.0"
+trigger: "manual | cron"
+risk_level: "MED | HIGH | CRITICAL"
+
+# ─── 角色定义 ──────────────────────────────────
+roles:
+  chair:
+    driver: kanban
+    assignee: chair
+    description: "议题定义、综合决策、归档"
+  exec:
+    driver: kanban
+    assignee: exec
+    description: "出方案（并行副本数量由 parallelism 控制）"
+  audit:
+    driver: kanban
+    assignee: audit
+    description: "审查方案，合规检查"
+  scribe:
+    driver: kanban
+    assignee: scribe
+    description: "归档到 ADR/STATE/HANDOFF"
+  critic:
+    driver: kanban
+    assignee: chair
+    description: "高风险时专职挑错（由 chair 兼任或 delegate）"
+
+# ─── 任务链 ────────────────────────────────────
+chain:
+  - step: S01
+    name: "定义议题包"
+    role: chair
+    action: >
+      读取 STATE.yaml + HANDOFF/LATEST.md，
+      结合输入 topic/context 生成结构化议题包（含背景、约束、checklist）。
+    output: "议题包（写入 workspace）"
+    depends_on: []
+
+  - step: S02
+    name: "并行出方案"
+    role: exec
+    parallelism: 2  # 两个 EXEC 并行，各自独立出方案
+    action: >
+      读取议题包，输出具体执行方案（步骤、工具、风险、时间估算）。
+    depends_on: [S01]
+
+  - step: S03
+    name: "审查方案"
+    role: audit
+    action: >
+      输入：议题包 + 两套方案。
+      输出：审查报告（逐条评审、对比、合规检查、修改建议）。
+    depends_on: [S02]  # 等待所有 S02 完成
+
+  - step: S04
+    name: "综合决策"
+    role: chair
+    action: >
+      对比方案A vs 方案B vs AUDIT意见。
+      决策：选A / 选B / 合并 / 重做。
+      HIGH/CRITICAL → 人类确认。
+    output: "决策记录"
+    depends_on: [S03]
+
+  - step: S05
+    name: "归档"
+    role: scribe
+    action: >
+      更新 STATE.yaml。
+      写入 HANDOFF/LATEST.md。
+      重要决策写入 ADR-010+。
+      失败/偏差写入 FAILURES。
+    depends_on: [S04]

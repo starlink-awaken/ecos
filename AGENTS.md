@@ -34,14 +34,17 @@ eCOS/
 │
 ├── docs/                  ← 架构+决策+策略文档
 │   ├── architecture/      ← 六层模型·IPA·SSB Schema
-│   ├── decisions/ADR/     ← 7 份架构决策 (编号001-007)
+│   ├── decisions/ADR/     ← 9 份架构决策 (编号001-009)
 │   ├── decisions/RFC/     ← 变更提案
 │   ├── policy/            ← 不可逆操作规则等
 │   └── *.md               ← 复盘报告 (REVIEW/SCENARIO/REDTEAM/DEEP)
 │
+├── schedule/              ← 平台无关的调度描述（YAML）
+│   └── WF-004.yaml        ← 委员会会议调度描述（driver 驱动）
+│
 ├── agents/                ← Agent 行为规范
 │   ├── committee/         ← 委员会章程 + Phase1三角模式
-│   └── workflows/         ← WF-001/003/005 设计文档
+│   └── workflows/         ← WF-001~008 设计文档 + Manual Mode 模板
 │
 ├── LADS/                  ← 活体架构文档系统
 │   ├── HANDOFF/           ← Agent 交接 (LATEST.md 永远是最新)
@@ -59,11 +62,45 @@ eCOS/
 
 | 组件 | 状态 |
 |------|------|
-| Phase | 1 (单体建立期) — 已完成 |
+| Phase | 3 (蜂群涌现期) — CLOSED |
 | MCP | KOS 13 tools + Minerva 9 tools = 22 |
-| KOS | 7 域, 7,203 文档 |
-| Cron | WF-001(索引)·WF-003(巡检)·WF-005(HANDOFF) |
-| Git | 6 commits, GENOME 监控已启用 |
+| KOS | 7 域, 11,077 文档 |
+| Cron | WF-001/003/005/006/007 — 6 个在线 |
+| Kanban | Board: `ecos` · Profile: chair/exec/audit/scribe |
+| SSB | 4,332 事件 · WF-008 桥接就绪 |
+| Schedule | WF-004.yaml — 5步委员会会议链 |
+| Git | 38+ commits, GENOME 监控已启用 |
+
+---
+
+## 三态运行模式
+
+eCOS 的调度层分三层，不绑定单一平台：
+
+| 层 | 实现 | 平台依赖 | 降级路径 |
+|----|------|---------|---------|
+| **L3: 调度执行** | Kanban Dispatcher + Profile | Hermes | → 手动 dispatch |
+| **L2: 调度描述** | `schedule/*.yaml` | 无（纯YAML） | 任何编辑器可读 |
+| **L1: 状态基座** | SSB + HANDOFF + STATE.yaml | 无（纯文件） | 直接读文件 |
+
+**降级操作**（当 Hermes 不可用时）:
+
+```bash
+# Step 1: 读取 Kanban DB 确认当前任务状态
+sqlite3 ~/.hermes/kanban/boards/ecos/kanban.db \
+  "SELECT id, status, assignee, title FROM tasks
+   WHERE status IN ('running','blocked','ready')"
+
+# Step 2: 读取 workspace 产物
+ls ~/.hermes/kanban/workspaces/t_*/
+
+# Step 3: 按 Manual Mode 执行剩余步骤
+cd ~/Workspace/eCOS
+python3 scripts/ecos_scheduler.py WF-004 --driver manual
+
+# Step 4: 更新 HANDOFF
+# 手动编辑 LADS/HANDOFF/LATEST.md
+```
 
 ---
 

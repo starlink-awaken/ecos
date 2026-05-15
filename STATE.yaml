@@ -1,19 +1,23 @@
 system: eCOS
-version: "0.3.0"
-timestamp: "2026-05-14T17:15:00+08:00"
+version: "0.3.1"
+timestamp: "2026-05-15T09:00:00+08:00"
 phase: 3
-phase_name: "蜂群涌现期 — 全部交付"
+phase_name: "蜂群涌现期 — Phase A 收尾（Kanban 调度验证完成）"
 architecture: "82%"
 security: "78%"
-ssb_events: 4245
+ssb_events: 4332
 cron: 6
-scripts: 12
+scripts: 14  # +2: ecos_scheduler.py + wf-008-kanban-ssb-bridge.py
 multi_model: "GPT(ACP)+Claude(CLI)+Gemini(ACP)+Kimi(ACP)+DeepSeek(native)"
+profiles: 4  # +4: chair exec audit scribe
+kanban_board: "ecos"
+kanban_tasks: 5
+schedule: "WF-004 (5-step committee chain)"
 adr: 9
 failures: 15
-handoff_history: 8
+handoff_history: 9
 commits: 38
-files: 99
+files: 101
 
-state: CLOSED
-next_check: ADR-010 · WF-002首跑(周日03:00) · 稳定观察
+state: RUNNING
+next_check: WF-008 桥接部署cron · WF-002首跑(周日03:00) · SSB schema升级 · ADR-010

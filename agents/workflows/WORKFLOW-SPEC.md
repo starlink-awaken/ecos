@@ -68,11 +68,56 @@ on_complete:
 
 | ID | 名称 | 触发方式 | 状态 |
 |----|------|----------|------|
-| WF-001 | KOS 每日索引更新 | cron daily | 待设计 |
-| WF-002 | Minerva 深度研究 | manual | 待设计 |
-| WF-003 | 系统健康检查 | cron weekly | 待设计 |
-| WF-004 | 委员会决策会议 | manual | 待设计 |
-| WF-005 | HANDOFF 自动更新 | 每次会话结束 | 待设计 |
+| WF-001 | KOS 每日索引更新 | cron daily | 已上线 |
+| WF-002 | Minerva 深度研究 | cron weekly | 已上线（周日首跑） |
+| WF-003 | 系统健康检查 | cron daily | 已上线 |
+| WF-004 | 委员会决策会议 | manual/schedule | 已设计（含 Kanban 调度） |
+| WF-005 | HANDOFF 自动更新 | every 2h | 已上线 |
+| WF-006 | 感知管道 | cron hourly | 已上线 |
+| WF-007 | 实时安全检查 | cron every 6h | 已上线 |
+| WF-008 | Kanban→SSB 事件桥接 | cron every 5min | 已实现，待部署 |
+
+---
+
+## 手动模式（Manual Mode）模板
+
+每个 WF 文档必须包含此章节，确保不依赖 Agent 平台时也能执行。
+
+```markdown
+## 手动模式（降级/兜底时使用）
+
+### 前置条件
+- [ ] 读取 STATE.yaml 确认当前 Phase
+- [ ] 读取 HANDOFF/LATEST.md 确认上次交接状态
+- [ ] 检查 `schedule/{WF-ID}.yaml` 获取步骤描述
+
+### 执行信息
+- **WF-ID**: {WF-NNN}
+- **步骤数**: N
+- **调度驱动**: `python3 scripts/ecos_scheduler.py {WF-ID} --driver manual`
+
+### 操作步骤
+
+执行调度器输出操作手册：
+
+```bash
+cd ~/Workspace/eCOS
+python3 scripts/ecos_scheduler.py {WF-ID} --driver manual
+```
+
+按手册逐条执行。每完成一步确认预期输出。
+
+### 预期产出
+- [ ] 各步骤中间产物
+- [ ] STATE.yaml 更新（如有）
+- [ ] HANDOFF/LATEST.md 更新
+- [ ] SSB 事件记录
+
+### 故障处理
+- Kanban 可用但 Profile 不可用: `python3 scripts/ecos_scheduler.py {WF-ID} --driver manual` 代替
+- Kanban 完全不可用: 直接读 SQLite 确认当前状态（见 AGENTS.md 兜底操作）
+- 所有平台不可用: 纯人工执行 WORKFLOW-SPEC.md 中的步骤定义
+```
 
 ---
 
