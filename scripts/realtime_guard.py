@@ -6,8 +6,7 @@ Usage: python3 realtime_guard.py <operation> [--auto-deny]
 Checks IRREVERSIBLE-OPS before allowing execution.
 Exit 0 = safe, Exit 1 = blocked.
 """
-import json, sys, os
-from pathlib import Path
+import json, sys
 
 IRREVERSIBLE_OPS = {
     "send_message":         {"level": 3, "reason": "消息已抵达用户设备，不可撤回"},

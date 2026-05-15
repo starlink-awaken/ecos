@@ -69,3 +69,12 @@ def ensure_ssb_table(conn: sqlite3.Connection = None):
     conn.commit()
     if close_after:
         conn.close()
+
+
+# ─── 命名常量 ──────────────────────────────────────────────────────────
+MAX_FILE_READ_SIZE = 5000           # filter_scorer: 文件读取字符上限
+DEFAULT_QUALITY_THRESHOLD = 60      # filter_scorer: 质量通过阈值
+DEFAULT_RELEVANCE_THRESHOLD = 40    # filter_scorer: 相关性通过阈值
+INTEGRATE_AUTO_SCORE = 0.6          # integrate_pipeline: 自动链接阈值
+INTEGRATE_CANDIDATE_SCORE = 0.4     # integrate_pipeline: 候选链接阈值
+SSB_JSONL_PATH = SSB_DB_DIR / "ecos.jsonl"  # JSONL 事件流路径

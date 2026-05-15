@@ -5,7 +5,9 @@ SSB Schema V1 迁移 — 幂等、安全、可回滚
 import json, os, sys, shutil, time
 from datetime import datetime, timedelta
 
-SSB_PATH = os.path.expanduser("~/Workspace/eCOS/LADS/ssb/ecos.jsonl")
+from ecos_common import SSB_JSONL_PATH, SSB_DB_DIR
+
+SSB_PATH = str(SSB_JSONL_PATH)
 BACKUP = SSB_PATH + f".backup.{int(time.time())}"
 
 AGENT_TYPE_MAP = {

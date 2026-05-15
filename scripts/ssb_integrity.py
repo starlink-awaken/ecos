@@ -3,7 +3,7 @@
 import sqlite3, hashlib, sys, os
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "LADS" / "ssb" / "ecos.db"
+from ecos_common import SSB_DB_PATH as DB_PATH
 CHAIN_CHECKPOINT = Path(__file__).resolve().parent.parent / "LADS" / "ssb" / ".chain_hash"
 
 def compute_chain_hash(db):

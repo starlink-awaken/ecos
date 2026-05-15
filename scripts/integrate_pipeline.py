@@ -12,7 +12,7 @@ Integrate Pipeline — 感知管道第五阶段 (Phase 4 Sprint 2)
 设计:
   输入: SSB event (doc_created / doc_updated)
   输出: cross-reference link → KOS entity graph
-  阈值: similarity > 0.6 → 自动链接, 0.4-0.6 → 候选待审核
+  阈值: similarity > INTEGRATE_AUTO_SCORE → 自动链接, INTEGRATE_CANDIDATE_SCORE-INTEGRATE_AUTO_SCORE → 候选待审核
 """
 
 import json
@@ -22,8 +22,8 @@ import re
 import time
 import hashlib
 from datetime import datetime
-from pathlib import Path
-from collections import Counter
+
+from ecos_common import INTEGRATE_AUTO_SCORE, INTEGRATE_CANDIDATE_SCORE
 
 ECOS = os.path.expanduser("~/Workspace/eCOS")
 SSB = os.path.join(ECOS, "LADS/ssb/ecos.jsonl")
@@ -135,7 +135,7 @@ def create_link(source_zone: str, source_doc: str,
         "target": {"zone": target_zone, "doc": target_doc},
         "score": round(score, 4),
         "entities": entities,
-        "status": "auto" if score > 0.6 else "candidate",
+        "status": "auto" if score > INTEGRATE_AUTO_SCORE else "candidate",
         "created": datetime.now().isoformat(),
         "pipeline": "integrate_v1",
     }
@@ -192,7 +192,7 @@ def run_integrate(limit: int = 10, dry_run: bool = False):
             
             score = 1.0 - match.get("distance", 0.5)  # convert distance to similarity
             
-            if score < 0.4:
+            if score < INTEGRATE_CANDIDATE_SCORE:
                 continue  # too low
             
             link = create_link(zone, action[:60], target_zone,

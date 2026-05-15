@@ -38,22 +38,18 @@ Scoring Dimensions:
 import json
 import os
 import re
-import sqlite3
-import sys
-from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
-from ecos_common import TZ, SSB_DB_PATH as _SSB_DB_PATH, now_iso, get_conn, CREATE_SSB_EVENTS_SQL
+from ecos_common import (
+    TZ, SSB_DB_PATH as _SSB_DB_PATH, now_iso, get_conn, CREATE_SSB_EVENTS_SQL,
+    DEFAULT_QUALITY_THRESHOLD, DEFAULT_RELEVANCE_THRESHOLD, MAX_FILE_READ_SIZE,
+)
 
 # ─── Paths ────────────────────────────────────────────────────────────
 
 ECOS_HOME = Path(__file__).resolve().parent.parent
 SSB_DB_PATH = _SSB_DB_PATH
-
-# Default quality threshold
-DEFAULT_QUALITY_THRESHOLD = 60
-DEFAULT_RELEVANCE_THRESHOLD = 40
 
 # Domain keywords (derived from KOS 7 domain structure)
 DOMAIN_KEYWORDS = {
@@ -105,7 +101,7 @@ def _read_file_content(file_path: str) -> str:
     """Read file content safely."""
     try:
         with open(file_path, "r", encoding="utf-8", errors="replace") as f:
-            return f.read(5000)  # First 5000 chars for scoring
+            return f.read(MAX_FILE_READ_SIZE)  # First N chars for scoring
     except (OSError, UnicodeDecodeError):
         return ""
 
@@ -439,8 +435,8 @@ class FilterPipeline:
             "relevance_domains": relevance["domains_matched"],
             "relevance_summary": relevance["summary"],
             "decision": "INDEX",
-            "threshold_quality": 60,
-            "threshold_relevance": 40,
+            "threshold_quality": DEFAULT_QUALITY_THRESHOLD,
+            "threshold_relevance": DEFAULT_RELEVANCE_THRESHOLD,
         }, ensure_ascii=False)
 
         new_seq = seq + 1
