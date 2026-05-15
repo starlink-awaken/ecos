@@ -4,10 +4,11 @@ timestamp: "2026-05-15T10:45:00+08:00"
 phase: 4
 phase_name: "蜂群智能期 — Phase 4 完成"
 architecture: "85%"  # +3%: Integrate+CRITIC+涌现度量
-security: "82%"  # +2%: cross_refs保护 + 红蓝v3
+security: "84%"  # +2%: 签名验证修复 + .gitignore加固
 ssb_events: 4385
 cron: 7
-scripts: 18  # +2: integrate_pipeline + critic_auto_trigger
+scripts: 19  # +1: ecos_common.py
+tests: 21  # test_core.py: ssb_auth(5) + realtime_guard(10) + 集成(5)
 multi_model: "GPT(ACP)+Claude(CLI)+Gemini(ACP)+Kimi(ACP)+DeepSeek(native)"
 profiles: 4
 kanban_board: "ecos"
@@ -16,8 +17,8 @@ schedule: "WF-004 (5-step committee chain)"
 adr: 10
 failures: 15
 handoff_history: 12
-commits: 59
-files: 131
+commits: 64
+files: 139
 
 state: RUNNING
 next_check: SSB Schema V1迁移 · WF-002首跑 · 红蓝对抗v3
