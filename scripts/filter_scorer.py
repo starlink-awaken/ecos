@@ -669,7 +669,7 @@ def main():
             print(f"📊 Quality pass:     {results['passed_quality']} (quality OK, relevance low)")
             print(f"📊 Relevance pass:   {results['passed_relevance']} (relevance OK, quality low)")
             print(f"❌ Filtered out:     {results['filtered_out']}")
-            if results['errors']:
+            if results.get('errors'):
                 print(f"\n⚠️  Errors ({len(results['errors'])}):")
                 for err in results['errors'][:5]:
                     print(f"   • {err}")

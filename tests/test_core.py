@@ -227,7 +227,7 @@ class TestIntegration:
             state = yaml.safe_load(f)
         assert state["system"] == "eCOS"
         assert state["phase"] == 4
-        assert state["ssb_events"] == 4385
+        assert state["ssb_events"] >= 4385  # grows over time
         assert "emergence" in state
 
     def test_cross_refs_exists(self):

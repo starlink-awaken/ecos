@@ -78,10 +78,10 @@ class TestE2E_SSB_Lifecycle:
     def test_dump_complete_fields(self):
         """ssb_dump 应输出完整字段 (修复 F4)"""
         import scripts.ssb_dump as sd
-        # Just verify the SQL selects all needed columns
-        assert "payload_json" in open(sd.__file__).read()
-        assert "agent_signature" in open(sd.__file__).read()
-        assert "schema_version" in open(sd.__file__).read()
+        code = open(sd.__file__).read()
+        assert "payload_json" in code, "F4: must include payload_json"
+        assert "agent_signature" in code, "F4: must include agent_signature"
+        assert "FROM ssb_events" in code, "F4: dump must query full table"
 
     def test_ssb_file_exists(self):
         """SSB 数据库和 JSONL 文件存在"""

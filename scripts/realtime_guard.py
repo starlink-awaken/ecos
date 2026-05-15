@@ -10,6 +10,7 @@ import json, sys
 
 IRREVERSIBLE_OPS = {
     "send_message":         {"level": 3, "reason": "消息已抵达用户设备，不可撤回"},
+    "send-message":         {"level": 3, "reason": "消息已抵达用户设备，不可撤回（连字符变体）"},
     "himalaya send":        {"level": 3, "reason": "SMTP协议无撤回机制"},
     "xurl post":            {"level": 3, "reason": "已推送至第三方平台"},
     "git push":             {"level": 3, "reason": "已推送至远程，force push有风险"},

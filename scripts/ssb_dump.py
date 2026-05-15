@@ -10,10 +10,10 @@ def dump():
     db = sqlite3.connect(str(DB_PATH))
     db.row_factory = sqlite3.Row
     rows = db.execute(
-        "SELECT id, seq, event_id, timestamp, source_zone, source_agent, "
-        "event_type, action, target_zone, target_agent, priority, status, "
-        "action_required, confidence, payload_json, payload_size, media_path, "
-        "schema_version, agent_signature, created_at "
+        "SELECT id, seq, timestamp, session_id, source_agent, source_instance, "
+        "target_scope, target_hint, event_type, event_subtype, summary, detail, "
+        "confidence, risk_level, priority, action_req, deadline, "
+        "payload_json, semantic_json, agent_signature, created_at "
         "FROM ssb_events ORDER BY seq"
     ).fetchall()
     

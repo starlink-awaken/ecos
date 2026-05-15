@@ -59,7 +59,7 @@ TRIGGER_RULES = {
         "priority": 1,
     },
     "R5_BATCH_OPERATION": {
-        "pattern": r"批量|batch|all|全部",
+        "pattern": r"批量|batch|all|全部|创建.*\d+|删除所有",
         "source": "操作规模",
         "action": "flag_critic",
         "priority": 2,
@@ -151,8 +151,19 @@ def compute_emergence_metrics() -> dict:
     day_ago = now - 86400
     week_ago = now - 604800
     
-    recent_events = [e for e in events if e.get("timestamp", 0) > day_ago]
-    week_events = [e for e in events if e.get("timestamp", 0) > week_ago]
+    # Handle mixed timestamp formats (float epoch or ISO string)
+    def _ts(e):
+        ts = e.get("timestamp", 0)
+        if isinstance(ts, (int, float)):
+            return float(ts)
+        try:
+            from datetime import datetime
+            return datetime.fromisoformat(str(ts).replace('Z', '+00:00')).timestamp()
+        except:
+            return 0.0
+
+    recent_events = [e for e in events if _ts(e) > day_ago]
+    week_events = [e for e in events if _ts(e) > week_ago]
     
     # Metrics
     agents = set(e.get("agent", "?") for e in week_events)
