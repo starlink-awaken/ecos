@@ -355,9 +355,14 @@ class FilterPipeline:
             for row in rows:
                 try:
                     payload = json.loads(row["payload_json"])
-                    detail = json.loads(payload.get("detail", "{}")) if isinstance(payload.get("detail"), str) else payload.get("detail", {})
-                except (json.JSONDecodeError, TypeError):
-                    # If payload_json is a plain string
+                    raw_detail = payload.get("detail", "{}")
+                    if isinstance(raw_detail, str):
+                        detail = json.loads(raw_detail) if raw_detail else {}
+                    elif isinstance(raw_detail, dict):
+                        detail = raw_detail
+                    else:
+                        detail = {}
+                except (json.JSONDecodeError, TypeError, AttributeError):
                     detail = {}
 
                 file_path = detail.get("path", "")

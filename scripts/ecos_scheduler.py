@@ -43,18 +43,25 @@ def _step_tag(schedule_id: str, step: str) -> str:
     return f"[{schedule_id}/{step}]"
 
 def _resolve_dep_order(chain):
-    """Topological sort: return steps ordered by dependency depth."""
+    """Topological sort with cycle detection."""
     by_id = {s["step"]: s for s in chain}
     depths = {}
+    visiting = set()  # cycle detection
+    
     def _depth(step_id):
         if step_id in depths:
             return depths[step_id]
+        if step_id in visiting:
+            raise ValueError(f"Circular dependency detected: {step_id}")
+        visiting.add(step_id)
         deps = by_id[step_id].get("depends_on", [])
         if not deps:
             depths[step_id] = 0
         else:
             depths[step_id] = 1 + max(_depth(d) for d in deps)
+        visiting.discard(step_id)
         return depths[step_id]
+    
     for s in chain:
         _depth(s["step"])
     return sorted(chain, key=lambda s: depths[s["step"]])

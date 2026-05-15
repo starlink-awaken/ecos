@@ -404,7 +404,9 @@ class CaptureWatcher:
                         # Mark as seen
                         self.db.mark_seen(sha, filepath, classification, size, mtime)
 
-                        results["files_new" if is_new else "files_scanned"] += 1
+                        results["files_scanned"] += 1
+                        if is_new:
+                            results["files_new"] += 1
                         results["events_published"] += 1
 
                     except (OSError, PermissionError) as e:
