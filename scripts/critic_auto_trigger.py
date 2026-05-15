@@ -64,6 +64,24 @@ TRIGGER_RULES = {
         "action": "flag_critic",
         "priority": 2,
     },
+    "R6_ARCHITECTURE_CHANGE": {
+        "pattern": r"架构|迁移|Phase.*[5-9]|重构|设计.*系统",
+        "source": "架构变更",
+        "action": "auto_critic",
+        "priority": 1,
+    },
+    "R7_DATA_MIGRATION": {
+        "pattern": r"迁移.*数据|数据库.*迁移|schema|dump|恢复|备份策略",
+        "source": "数据迁移",
+        "action": "auto_critic",
+        "priority": 1,
+    },
+    "R8_SECURITY_POLICY": {
+        "pattern": r"安全策略|安全.*加固|HMAC|签名.*全|加密方案|权限.*改",
+        "source": "安全变更",
+        "action": "auto_critic",
+        "priority": 1,
+    },
 }
 
 

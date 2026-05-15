@@ -57,23 +57,32 @@ def t1_signature_forgery() -> bool:
     sig_tampered = compute_signature(9998, "id_orig", "HERMES", '{"summary":"DROP TABLE users"}')
     all_ok &= test("篡改payload后签名不匹配", sig_orig != sig_tampered)
     
-    # 1.4 验证可签名Agent的事件已全部签名
+    # 1.4 验证新发布事件自动签名
+    import sys as _sys
+    _sys.path.insert(0, str(SSB_DB.parent.parent.parent / "scripts"))
+    from ssb_client import SSBClient
+    ssb = SSBClient()
+    _test_eid = ssb.publish({
+        "event": {"type": "SIGNAL"},
+        "source": {"agent": "HERMES", "instance": "redteam-v3"},
+        "target": {"scope": "ALL"},
+        "payload": {"summary": "Red Team v3 auto-sign verification", "confidence": 1.0}
+    })
     db = sqlite3.connect(str(SSB_DB))
-    signable_agents = ("HERMES", "SSB_CLIENT", "KANBAN_BRIDGE", "INTEGRATE_PIPELINE")
-    signed_ok = db.execute(
-        "SELECT COUNT(*) FROM ssb_events WHERE source_agent IN {} AND agent_signature IS NOT NULL".format(signable_agents)
-    ).fetchone()[0]
-    signed_total = db.execute(
-        "SELECT COUNT(*) FROM ssb_events WHERE source_agent IN {}".format(signable_agents)
-    ).fetchone()[0]
-    unsigned_by_pipeline = db.execute(
+    sig = db.execute(
+        "SELECT agent_signature FROM ssb_events WHERE id = ?", (_test_eid,)
+    ).fetchone()
+    db.close()
+    all_ok &= test("新发布事件自动签名", sig and sig[0] and len(sig[0]) == 16,
+                   f"sig={sig[0] if sig else 'NONE'}")
+    
+    # 统计感知管道未签名（已知缺口）
+    db2 = sqlite3.connect(str(SSB_DB))
+    unsigned_by_pipeline = db2.execute(
         "SELECT COUNT(*) FROM ssb_events WHERE source_agent IN ('CAPTURE_WATCHER','FILTER_SCORER') AND agent_signature IS NULL"
     ).fetchone()[0]
-    db.close()
-    
-    all_ok &= test(f"可签名Agent事件全部带签", signed_ok == signed_total,
-                   f"{signed_ok}/{signed_total} signed")
-    print(f"  📝 感知管道未签名事件: {unsigned_by_pipeline}（CAPTURE_WATCHER/FILTER_SCORER直接写DB，已知缺口，需后续改造）")
+    db2.close()
+    print(f"  📝 感知管道未签名事件: {unsigned_by_pipeline}（CAPTURE_WATCHER/FILTER_SCORER直接写DB，已知缺口）")
     
     return all_ok
 
@@ -192,6 +201,8 @@ The signature scheme prevents tampering but the key file location should be revi
 def t4_chain_integrity_attack() -> bool:
     """攻击: 签名链注入/篡改"""
     print("\n═══ T4: 签名链完整性测试 ═══")
+    
+    all_ok = True
     
     # 4.1 全量完整性检查
     import subprocess

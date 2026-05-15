@@ -89,7 +89,7 @@ def verify(limit: int = 100):
     return stats
 
 
-def sign_new_events(limit: int = 50):
+def sign_new_events(limit: int = 50, all_events: bool = False):
     """为新事件签名 (补充 agent_signature 字段)"""
     key = _load_key()
     if not key:
@@ -99,11 +99,16 @@ def sign_new_events(limit: int = 50):
     db = sqlite3.connect(str(DB_PATH))
     _ensure_schema(db)
     
-    rows = db.execute(
-        "SELECT id, seq, payload_json, source_agent FROM ssb_events "
-        "WHERE agent_signature IS NULL "
-        "ORDER BY seq DESC LIMIT ?", (limit,)
-    ).fetchall()
+    if all_events:
+        rows = db.execute(
+            "SELECT id, seq, payload_json, source_agent FROM ssb_events "
+            "WHERE agent_signature IS NULL ORDER BY seq"
+        ).fetchall()
+    else:
+        rows = db.execute(
+            "SELECT id, seq, payload_json, source_agent FROM ssb_events "
+            "WHERE agent_signature IS NULL ORDER BY seq DESC LIMIT ?", (limit,)
+        ).fetchall()
     
     signed = 0
     for eid, seq, payload, agent in rows:
@@ -130,7 +135,8 @@ if __name__ == "__main__":
         result = verify()
         sys.exit(0 if result.get("status") == "ok" else 1)
     elif cmd == "sign-new":
-        sign_new_events()
+        all_events = "--all" in sys.argv
+        sign_new_events(all_events=all_events)
     else:
         print(f"Unknown: {cmd}")
-        print("Commands: keygen | verify | sign-new")
+        print("Commands: keygen | verify | sign-new [--all]")
