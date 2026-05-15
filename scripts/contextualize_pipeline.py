@@ -3,11 +3,14 @@
 Contextualize Pipeline — Perception Layer Stage 4 (Sprint 4)
 Auto-links new documents to existing KOS entities and projects.
 """
-import json, re, sys, sqlite3
+import json, re, sys, sqlite3, os
 from pathlib import Path
 from datetime import datetime
 
-KOS_DB = Path("/Users/xiamingxing/Library/Mobile Documents/iCloud~md~obsidian/Documents/99-系统/memory/retrieval/documents-retrieval.sqlite")
+KOS_DB = Path(os.environ.get(
+    "KOS_INDEX_PATH",
+    os.path.expanduser("~/Library/Mobile Documents/iCloud~md~obsidian/Documents/99-系统/memory/retrieval/documents-retrieval.sqlite")
+))
 
 def _load_entities() -> list:
     """Load known entities from KOS for matching."""

@@ -28,7 +28,10 @@ from collections import Counter
 ECOS = os.path.expanduser("~/Workspace/eCOS")
 SSB = os.path.join(ECOS, "LADS/ssb/ecos.jsonl")
 CROSS_REF = os.path.join(ECOS, "LADS/cross_refs.jsonl")
-KOS_INDEX = os.path.expanduser("~/Library/Mobile Documents/iCloud~md~obsidian/Documents/99-系统/memory/retrieval/documents-retrieval.sqlite")
+KOS_INDEX = os.path.expanduser(os.environ.get(
+    "KOS_INDEX_PATH",
+    "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/99-系统/memory/retrieval/documents-retrieval.sqlite"
+))
 
 # ─── 1. Entity Extraction ───
 def extract_entities(text: str, title: str = "") -> dict:
