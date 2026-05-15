@@ -335,10 +335,10 @@ class FilterPipeline:
             "passed_relevance": 0,
             "passed_both": 0,
             "filtered_out": 0,
-            "errors": [],
         }
-
+        
         conn = _get_conn()
+        conn.execute("BEGIN IMMEDIATE")  # Prevent concurrent duplicate processing
         try:
             # Find PERCEPTION events marked for EXECUTE
             rows = conn.execute("""
@@ -411,6 +411,9 @@ class FilterPipeline:
                 )
 
             conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
         finally:
             conn.close()
 

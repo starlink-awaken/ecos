@@ -91,28 +91,26 @@ def build_search_query(entities: dict, title: str) -> str:
 # ─── 2. Cross-Domain Search ───
 def cross_domain_search(query: str) -> list:
     """使用 KOS MCP 跨域搜索 (语义+LanceDB)"""
-    import subprocess
+    import subprocess, shlex
     
     try:
-        # Use KOS MCP semantic search through CLI
-        script = f"""
+        # Safe: query passed as argument, not interpolated into code
+        result = subprocess.run(
+            ["python3", "-c", f"""
 import sys, json
 sys.path.insert(0, '{ECOS}')
 sys.path.insert(0, '{ECOS}/../kos')
 try:
     from kos_indexer import semantic_search
-    results = semantic_search("{query}", limit=5)
+    results = semantic_search(sys.argv[1], limit=5)
     print(json.dumps(results, ensure_ascii=False))
 except ImportError:
-    # Fallback: read SSB as approximation
     with open('{SSB}') as f:
         events = [json.loads(l) for l in f if l.strip()]
     recent = events[-10:]
-    print(json.dumps([{{"doc_id": e.get("seq"), "title": str(e.get("action",""))[:60], 
-                       "zone": e.get("zone", "ssb"), "distance": 0.7}} for e in recent]))
-"""
-        result = subprocess.run(
-            ["python3", "-c", script],
+    print(json.dumps([{{"doc_id": e.get("seq"), "title": str(e.get("action",""))[:60],
+                       "zone": e.get("zone","ssb"), "distance": 0.7}} for e in recent]))
+""", query],  # query as argv[1], not string interpolation
             capture_output=True, text=True, timeout=30
         )
         if result.returncode == 0 and result.stdout.strip():

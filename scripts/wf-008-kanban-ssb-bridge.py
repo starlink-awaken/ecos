@@ -60,15 +60,20 @@ def _next_seq(db):
     return row[0]
 
 def _insert_ssb(db, seq, event_type, summary, agent, detail="", risk="LOW"):
-    """Insert SSB event."""
+    """Insert SSB event matching ecos_common schema."""
+    import uuid
     now = datetime.now(TZ).strftime("%Y-%m-%dT%H:%M:%S+08:00")
-    eid = hashlib.sha256(f"{seq}|{now}|{summary}".encode()).hexdigest()[:16]
+    eid = str(uuid.uuid4())[:8]
     db.execute("""
         INSERT OR IGNORE INTO ssb_events
-        (id, seq, timestamp, session_id, source_agent, source_instance,
-         target_scope, event_type, summary, detail, risk_level, payload_json)
-        VALUES (?, ?, ?, '', 'KANBAN_BRIDGE', 'WF-008', 'ALL', ?, ?, ?, ?, '{}')
-    """, (eid, seq, now, event_type, summary, detail, risk))
+        (seq, event_id, timestamp, source_agent, event_type, action,
+         payload_json, priority, status, schema_version)
+        VALUES (?, ?, ?, 'KANBAN_BRIDGE', ?, ?, ?, 
+                CASE WHEN ?='HIGH' THEN 10 WHEN ?='MED' THEN 5 ELSE 0 END,
+                'active', '1.0')
+    """, (seq, eid, now, event_type, summary, 
+          json.dumps({"detail": detail, "risk": risk}),
+          risk, risk))
     return eid
 
 def sync(dry_run=False, full=False):

@@ -41,6 +41,9 @@ from typing import Optional
 
 from ecos_common import TZ, SSB_DB_PATH as _SSB_DB_PATH, SSB_DB_DIR, now_iso, get_conn, CREATE_SSB_EVENTS_SQL
 
+# SSB Auth for event signing
+from ssb_auth import compute_signature
+
 
 # ─── Paths ────────────────────────────────────────────────────────────
 
@@ -196,6 +199,7 @@ class SSBClient:
         if auto_init:
             self._init_db()
             self._last_seq = self._current_seq()
+            self._last_sub_seq = self._last_seq  # subscribe() baseline
 
     def _get_conn(self):
         """Get a new SQLite connection (thread-safe per-call)."""
@@ -287,6 +291,10 @@ class SSBClient:
         seq = self._current_seq() + 1
         event["_seq"] = seq
 
+        # Compute HMAC signature
+        payload_json_str = json.dumps(payload, ensure_ascii=False)
+        sig = compute_signature(seq, event_id, source.get("agent", "UNKNOWN"), payload_json_str) or ""
+
         # Write to SQLite
         conn = self._get_conn()
         try:
@@ -297,13 +305,13 @@ class SSBClient:
                  target_scope, target_hint,
                  event_type, event_subtype,
                  summary, detail, confidence, risk_level, priority,
-                 action_req, deadline, payload_json, semantic_json)
+                 action_req, deadline, payload_json, semantic_json, agent_signature)
                 VALUES (?, ?, ?, ?,
                         ?, ?,
                         ?, ?,
                         ?, ?,
                         ?, ?, ?, ?, ?,
-                        ?, ?, ?, ?)
+                        ?, ?, ?, ?, ?)
             """, (
                 event_id, seq, event["timestamp"],
                 event.get("session_id", ""),
@@ -319,6 +327,7 @@ class SSBClient:
                 payload.get("deadline", ""),
                 json.dumps(payload, ensure_ascii=False),
                 json.dumps(semantic, ensure_ascii=False),
+                sig,
             ))
             conn.commit()
         finally:
@@ -457,27 +466,16 @@ class SSBClient:
 
     def subscribe(self, event_type: Optional[str] = None, block: bool = True, 
                   interval: float = 2.0) -> list:
-        """
-        Poll for new events since last check (non-blocking by default).
-        
-        Args:
-            event_type: Optional filter
-            block: If True, keep polling until new events arrive (up to 30s)
-            interval: Poll interval in seconds
-        
-        Returns:
-            List of new event dicts since last subscribe() call
-        """
+        """轮询新事件 (生产代码请使用 query() 获取精确结果)"""
         deadline = time.time() + 30
         while True:
             new_seq = self._current_seq()
-            if new_seq > self._last_seq:
-                results = self.query(since=None, limit=new_seq - self._last_seq + 10)
-                # Filter to only new ones
-                new_events = [e for e in results if e.get("seq", 0) > self._last_seq]
-                # Hmm, the seq isn't in the returned dict... let me add it.
-                # Actually, let me use query with since timestamp
-                pass
+            if new_seq > self._last_sub_seq:
+                # Query only new events (since last subscribe checkpoint)
+                results = self.query(limit=new_seq - self._last_sub_seq + 5)
+                if results:
+                    self._last_sub_seq = new_seq
+                    return results
 
             if not block:
                 return []
@@ -490,51 +488,13 @@ class SSBClient:
     # ─── State ────────────────────────────────────────────────────────
 
     def load_state(self) -> dict:
-        """Parse current STATE.yaml into a dict."""
+        """Parse current STATE.yaml into a dict (使用 yaml.safe_load)."""
         if not STATE_PATH.exists():
             return {"phase": "2", "sprint": "1", "last_state_change": {}}
         
-        text = STATE_PATH.read_text(encoding="utf-8")
-        state = {}
-        current_key = None
-        current_list = []
-        in_list = False
-        
-        for line in text.split("\n"):
-            stripped = line.rstrip()
-            if stripped.startswith("#") or stripped == "" or stripped.startswith(">"):
-                continue
-            if stripped.startswith("- "):
-                in_list = True
-                if current_key:
-                    val = stripped[2:].strip()
-                    if val and not val.startswith("["):
-                        current_list.append(val)
-                continue
-            elif in_list:
-                if current_key and current_list:
-                    state[current_key] = current_list
-                current_key = None
-                current_list = []
-                in_list = False
-
-            if ":" in stripped and not stripped.startswith(" "):
-                key, _, val = stripped.partition(":")
-                key = key.strip()
-                val = val.strip()
-                
-                if val == "" or val.startswith("#"):
-                    current_key = key
-                    current_list = []
-                    in_list = False
-                else:
-                    state[key] = val
-        
-        # Flush last list
-        if in_list and current_key and current_list:
-            state[current_key] = current_list
-        
-        return state
+        import yaml
+        with open(STATE_PATH, encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
 
     def _write_state(self, state: dict):
         """Write dict back to STATE.yaml."""
