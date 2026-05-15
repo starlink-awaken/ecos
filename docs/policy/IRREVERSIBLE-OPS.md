@@ -20,6 +20,7 @@
 | 邮件发送 | himalaya send | SMTP 协议无撤回机制 |
 | 公开发帖 | xurl post, Discord 消息 | 已推送至第三方平台，撤回≠取消可见 |
 | Git push | git push origin main | 已推送至远程，force push 可能破坏他人工作 |
+| SSB事件删除 | ssb_client.py --delete | 事件流历史丢失，无法从其他源重建 |
 | 数据删除 | rm -rf, DROP TABLE | 无备份则永久丢失 |
 | API 写操作 | POST/PUT/DELETE 外部服务 | 不可回滚（如 GitHub Issue close 后 reopen 会产生通知噪音） |
 | 通知推送 | send_message | 消息已抵达用户设备 |
@@ -61,6 +62,7 @@
 - 发送邮件（外部）
 - 公开发帖（X、Discord 公开频道）
 - Git push 到共享分支
+- SSB 事件批量删除（非测试环境）
 - 删除远程资源（GitHub仓库、云存储桶）
 - rm -rf 无备份删除
 - send_message 到非测试频道

@@ -1,42 +1,45 @@
----
-agent_signature:
-  agent: "WF-005-cron"
-  model: "WF-005-cron"
-  session_id: "wf005-kanban-phase-a"
-  timestamp: "2026-05-15T09:00:00+08:00"
----
+# eCOS HANDOFF — 跨会话状态交接
 
-# HANDOFF — Phase A Kanban 调度验证完成
+> 自动生成 | 2026-05-15T10:20+08:00 | T7 崩溃恢复测试
 
-> 由 Hermes 手动更新。Phase A 收尾。
+## 系统快照
 
-## 当前状态摘要
+| 指标 | 值 |
+|------|-----|
+| KOS 文档 | 8,351 |
+| SSB 事件 | 4,384 |
+| Minerva 报告 | 867 |
+| Cron 作业 | 7 运行 |
+| 活跃 Agent | 5 (GPT/Claude/Gemini/Kimi/DeepSeek) |
+| 感知事件 | 118 |
 
-- **Phase**: 3 (蜂群涌现期 — Phase A 收尾)
-- **Architecture**: 82% · **Security**: 78%
-- **SSB Events**: 4332 · **Cron**: 6 · **Scripts**: 14
-- **Multi-Model**: GPT(ACP)+Claude(CLI)+Gemini(ACP)+Kimi(ACP)+DeepSeek(native)
-- **Profiles**: 4 (chair/exec/audit/scribe)
-- **Kanban Board**: ecos (5 tasks tested, chain auto-promotion ✅)
-- **Schedule**: WF-004.yaml (5-step committee chain, 2 drivers)
-- **SSB Bridge**: WF-008 (21 events synced ✅)
-- **ADR**: 9 · **Failures**: 15 · **Handoff History**: 10
-- **Commits**: 38 · **Files**: 101
-- **State**: RUNNING
-- **Next Check**: WF-008 cron部署 · WF-002首跑(周日03:00) · SSB schema升级签名 · ADR-010
+## 最近活动 (SSB 后 20 事件)
 
-## 已验证的内容
+- T7 崩溃恢复测试：SSB原子性验证通过（模拟36事件崩溃→全量恢复）
+- Phase 3 收尾：GitHub推送52commits，多模型委员会8/8
+- Phase 4 启动：LanceDB语义搜索可用，Integrate管道进行中
 
-1. ✅ Kanban board `ecos` 创建 + 4 Profiles
-2. ✅ ecos_scheduler.py: kanban/manual/status 3个driver
-3. ✅ 任务链自动流转: S01→done→S02 ready→done→S03 ready→...→全done
-4. ✅ SSB桥接: 21条Kanban事件写入SSB，类型映射正确
-5. ✅ Manual Mode模板写入WORKFLOW-SPEC.md
-6. ✅ 三层调度架构写入AGENTS.md（L1/L2/L3 + 兜底操作）
+## 当前状态
 
-## 给下一个 Agent
+- **Phase**: 3 → 4 过渡
+- **版本**: v0.3.1 → v0.4.0
+- **Git**: starlink-awaken/ecos, 52 commits, MIT
+- **安全**: SSB HMAC就绪 + 3级实时拦截
+- **管道**: 感知五阶 4/5 (Integrate进行中)
 
-1. 读取 STATE.yaml 获取完整快照
-2. 三态模式：L3=Kanban增强, L2=schedule YAML平台无关, L1=纯文件基座
-3. 待办：WF-008部署cron · WF-002手动验证 · SSB schema升级 · ADR-010
-4. KOS MCP 22 tools (13 KOS + 9 Minerva) 通过桥接使用
+## 待处理
+
+1. [ ] T8-T10 深度测试
+2. [ ] Integrate 管道实现
+3. [ ] HANDOFF 自动更新 cron 验证
+4. [ ] SSB 签名正式迁移（新旧事件）
+
+## Agent 签名
+
+```
+agent: HERMES_CLI
+session: 2026-05-15-t7-crash-test
+model: deepseek-v4-pro
+timestamp: 2026-05-15T10:20:00+08:00
+signature: sha256:hermes::t7-test::recovery-verification::v0.3.1
+```

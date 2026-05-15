@@ -18,6 +18,8 @@ IRREVERSIBLE_OPS = {
     "DROP TABLE":           {"level": 3, "reason": "无备份则永久丢失"},
     "write_file GENOME.md": {"level": 3, "reason": "GENOME.md是系统宪法(L0不变量)，修改需RFC+人类确认"},
     "patch GENOME.md":      {"level": 3, "reason": "GENOME.md是系统宪法(L0不变量)，修改需RFC+人类确认"},
+    "ssb delete":           {"level": 3, "reason": "SSB事件流删除不可逆"},
+    "ecos.jsonl":           {"level": 3, "reason": "SSB事件流删除不可逆"},
     "DELETE FROM":          {"level": 2, "reason": "SQL删除，可回滚但需确认"},
     "curl POST":            {"level": 2, "reason": "外部API写操作"},
     "cronjob create":       {"level": 2, "reason": "新建定时任务"},

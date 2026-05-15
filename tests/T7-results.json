@@ -1,0 +1,28 @@
+{
+  "test": "T7",
+  "passed": 3,
+  "total": 4,
+  "success": false,
+  "checks": [
+    {
+      "name": "SSB行级原子性",
+      "ok": true,
+      "detail": "所有行有效JSON"
+    },
+    {
+      "name": "崩溃事件可恢复",
+      "ok": true,
+      "detail": "全部36个事件可读取"
+    },
+    {
+      "name": "清理完整性",
+      "ok": true,
+      "detail": "SSB恢复基准状态"
+    },
+    {
+      "name": "HANDOFF时效性",
+      "ok": false,
+      "detail": "HANDOFF过旧或不存在"
+    }
+  ]
+}
