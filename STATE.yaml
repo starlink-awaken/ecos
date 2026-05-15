@@ -24,9 +24,9 @@ next_check: SSB Schema V1迁移 · WF-002首跑 · 红蓝对抗v3
 
 # Phase 4 涌现度量 (2026-05-15)
 emergence:
-  diversity: 4       # SSB活跃agent: FILTER/CAPTURE/KANBAN/INTEGRATE
+  diversity: 0.4       # SSB活跃agent: FILTER/CAPTURE/KANBAN/INTEGRATE
   committee_models: 5  # GPT/Claude/Gemini/Kimi/DeepSeek (delegate/ACP)
-  interaction_density: 0.25  # 4 agents, FILTER↔CAPTURE main pair
-  error_resilience: 1.0  # 0 errors in last 1000 events
-  knowledge_velocity: 4385  # total SSB events (accumulated)
-  updated: "2026-05-15T10:42:00+08:00"
+  interaction_density: 0.31  # 4 agents cross-interaction rate
+  error_resilience: 1.0  # 0 errors in last 4385 events
+  knowledge_velocity: 4385  # total SSB events (schema v1.0 migrated)
+  updated: "2026-05-15T10:50:00+08:00"
