@@ -1,0 +1,77 @@
+name: eCOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * *'  # daily
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: YAML Syntax Check
+        run: |
+          python3 -c "import yaml; yaml.safe_load(open('STATE.yaml'))"
+      
+      - name: Python Syntax Check
+        run: |
+          for f in scripts/*.py; do
+            python3 -c "import ast; ast.parse(open('$f').read())" || exit 1
+          done
+      
+      - name: GENOME L0 Integrity
+        run: |
+          python3 -c "
+          with open('GENOME.md') as f:
+            content = f.read()
+          checks = ['L0-01', 'L0-02', 'L0-03', 'L0-04', 'L0-05']
+          missing = [c for c in checks if c not in content]
+          if missing:
+            print(f'ERROR: Missing L0 invariants: {missing}')
+            exit(1)
+          print('L0 invariants: all present')
+          "
+      
+      - name: ADR Completeness
+        run: |
+          count=$(ls docs/decisions/ADR/*.md 2>/dev/null | wc -l)
+          echo "ADR count: $count"
+          for f in docs/decisions/ADR/*.md; do
+            python3 -c "
+            with open('$f') as fh:
+              c = fh.read()
+            for field in ['状态', '日期', '决策者']:
+              if field not in c:
+                print(f'WARNING: $f missing {field}')
+            "
+          done
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for exposed keys
+        run: |
+          if grep -r "sk-\|ghp_\|xoxb-\|xoxp-" --include="*.md" --include="*.yaml" . 2>/dev/null; then
+            echo "ERROR: Exposed credentials detected"
+            exit 1
+          fi
+          echo "No exposed credentials found"
+      
+      - name: Check local paths
+        run: |
+          count=$(grep -r "/Users/" --include="*.md" . 2>/dev/null | grep -v ".git" | grep -v "FAILURES\|ADR\|issues" | wc -l)
+          if [ "$count" -gt 5 ]; then
+            echo "WARNING: $count local path references (acceptable in historical docs)"
+          fi
