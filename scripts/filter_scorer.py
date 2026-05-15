@@ -44,11 +44,12 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
+from ecos_common import TZ, SSB_DB_PATH as _SSB_DB_PATH, now_iso, get_conn, CREATE_SSB_EVENTS_SQL
+
 # ─── Paths ────────────────────────────────────────────────────────────
 
-ECOS_HOME = Path(os.path.expanduser("~/Workspace/eCOS"))
-SSB_DB_PATH = ECOS_HOME / "LADS" / "ssb" / "ecos.db"
-TZ = timezone(timedelta(hours=8), "CST")
+ECOS_HOME = Path(__file__).resolve().parent.parent
+SSB_DB_PATH = _SSB_DB_PATH
 
 # Default quality threshold
 DEFAULT_QUALITY_THRESHOLD = 60
@@ -94,15 +95,10 @@ FILE_TYPE_WEIGHTS = {
 # ─── Helpers ──────────────────────────────────────────────────────────
 
 def _now() -> str:
-    return datetime.now(TZ).isoformat()
-
+    return now_iso()
 
 def _get_conn():
-    conn = sqlite3.connect(str(SSB_DB_PATH))
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA synchronous=NORMAL")
-    return conn
+    return get_conn()
 
 
 def _read_file_content(file_path: str) -> str:

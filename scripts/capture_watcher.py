@@ -35,12 +35,11 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
+from ecos_common import TZ, SSB_DB_PATH, SSB_DB_DIR, now_iso, get_conn as _get_conn_ecos, CREATE_SSB_EVENTS_SQL
+
 # ─── Paths ────────────────────────────────────────────────────────────
 
-ECOS_HOME = Path(os.path.expanduser("~/Workspace/eCOS"))
-SSB_DB_DIR = ECOS_HOME / "LADS" / "ssb"
-SSB_DB_PATH = SSB_DB_DIR / "ecos.db"
-TZ = timezone(timedelta(hours=8), "CST")
+ECOS_HOME = SSB_DB_DIR.parent.parent  # 保持兼容
 
 # Default monitored directories
 DEFAULT_MONITOR_DIRS = [
@@ -71,7 +70,7 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 # ─── Helpers ──────────────────────────────────────────────────────────
 
 def _now() -> str:
-    return datetime.now(TZ).isoformat()
+    return now_iso()
 
 
 def _sha256(path: str) -> str:
@@ -191,11 +190,7 @@ class PerceptionDB:
             conn.close()
 
     def _get_conn(self):
-        conn = sqlite3.connect(str(SSB_DB_PATH))
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        return conn
+        return _get_conn_ecos()
 
     def is_seen(self, sha256: str) -> bool:
         conn = self._get_conn()

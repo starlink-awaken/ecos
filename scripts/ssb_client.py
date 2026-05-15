@@ -39,12 +39,13 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
+from ecos_common import TZ, SSB_DB_PATH as _SSB_DB_PATH, SSB_DB_DIR, now_iso, get_conn, CREATE_SSB_EVENTS_SQL
+
 
 # ─── Paths ────────────────────────────────────────────────────────────
 
-ECOS_HOME = Path(os.path.expanduser("~/Workspace/eCOS"))
-SSB_DB_DIR = ECOS_HOME / "LADS" / "ssb"
-SSB_DB_PATH = SSB_DB_DIR / "ecos.db"
+ECOS_HOME = Path(__file__).resolve().parent.parent
+SSB_DB_PATH = _SSB_DB_PATH
 STATE_PATH = ECOS_HOME / "STATE.yaml"
 HANDOFF_DIR = ECOS_HOME / "LADS" / "HANDOFF"
 HANDOFF_LATEST = HANDOFF_DIR / "LATEST.md"
@@ -57,7 +58,7 @@ TZ = timezone(timedelta(hours=8), "CST")
 
 def _now() -> str:
     """ISO8601 with Asia/Shanghai timezone."""
-    return datetime.now(TZ).isoformat()
+    return now_iso()
 
 
 def _new_id() -> str:
@@ -198,11 +199,7 @@ class SSBClient:
 
     def _get_conn(self):
         """Get a new SQLite connection (thread-safe per-call)."""
-        conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        return conn
+        return get_conn(self.db_path)
 
     def _init_db(self):
         """Create tables if they don't exist."""
